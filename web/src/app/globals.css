@@ -1,0 +1,266 @@
+@import "tailwindcss";
+@import "@xyflow/react/dist/style.css";
+
+:root {
+  --ink: #0c1a22;
+  --ink-soft: #1a2f3a;
+  --fog: #e8f2ef;
+  --paper: #f7faf8;
+  --map-land: #eef6f3;
+  --map-park: #c5e0d4;
+  --map-water: #b8d9ce;
+  --teal: #0d7a6f;
+  --teal-bright: #12a394;
+  --route: #0d7a6f;
+  --route-glow: #5ec4b4;
+  --danger: #c44536;
+  --muted: #5a7380;
+  --line: #c5ddd6;
+  --blur-fade: 0.18;
+  --background: var(--paper);
+  --foreground: var(--ink);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-fog: var(--fog);
+  --color-paper: var(--paper);
+  --color-teal: var(--teal);
+  --color-teal-bright: var(--teal-bright);
+  --color-route: var(--route);
+  --color-route-glow: var(--route-glow);
+  --color-danger: var(--danger);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --font-sans: var(--font-plex);
+  --font-display: var(--font-brand);
+  --font-mono: var(--font-plex-mono);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-plex), system-ui, sans-serif;
+  margin: 0;
+}
+
+.font-brand {
+  font-family: var(--font-brand), "Nunito", "Arial Rounded MT Bold", "Arial Rounded MT", Arial, sans-serif;
+  letter-spacing: -0.02em;
+}
+
+/* Soft paper / atlas page */
+.atlas-grid {
+  background-color: #f7faf8;
+  background-image:
+    radial-gradient(ellipse 100% 80% at 50% -20%, rgba(13, 122, 111, 0.07), transparent 50%),
+    linear-gradient(rgba(13, 122, 111, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(13, 122, 111, 0.04) 1px, transparent 1px);
+  background-size: 100% 100%, 40px 40px, 40px 40px;
+}
+
+/* Green & white map terrain */
+.atlas-hero-map,
+.map-terrain {
+  background-color: #eef6f3;
+  background-image:
+    radial-gradient(ellipse 28% 22% at 18% 72%, rgba(165, 210, 180, 0.55), transparent 70%),
+    radial-gradient(ellipse 22% 18% at 78% 28%, rgba(165, 210, 180, 0.45), transparent 70%),
+    radial-gradient(ellipse 18% 14% at 55% 55%, rgba(165, 210, 180, 0.35), transparent 70%),
+    radial-gradient(ellipse 35% 20% at 88% 82%, rgba(160, 210, 195, 0.45), transparent 65%),
+    radial-gradient(ellipse 20% 28% at 8% 35%, rgba(160, 210, 195, 0.3), transparent 70%),
+    radial-gradient(ellipse 50% 40% at 40% 30%, rgba(230, 245, 238, 0.6), transparent 60%),
+    linear-gradient(rgba(13, 122, 111, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(13, 122, 111, 0.03) 1px, transparent 1px);
+  background-size:
+    100% 100%,
+    100% 100%,
+    100% 100%,
+    100% 100%,
+    100% 100%,
+    100% 100%,
+    32px 32px,
+    32px 32px;
+}
+
+/* React Flow overrides */
+.react-flow__background {
+  background: transparent !important;
+}
+
+.map-terrain .react-flow {
+  background: transparent !important;
+}
+
+.react-flow__renderer,
+.react-flow__pane {
+  cursor: grab;
+}
+
+.react-flow__pane:active {
+  cursor: grabbing;
+}
+
+.react-flow__node {
+  font-family: var(--font-plex), system-ui, sans-serif;
+}
+
+.react-flow__edge-path {
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.react-flow__controls {
+  border: none !important;
+  border-radius: 10px !important;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(60, 64, 67, 0.2), 0 0 0 1px rgba(60, 64, 67, 0.08) !important;
+}
+
+.react-flow__controls-button {
+  background: white !important;
+  border-bottom: 1px solid #eee !important;
+  fill: #3c4043 !important;
+  width: 40px !important;
+  height: 40px !important;
+}
+
+.react-flow__controls-button:hover {
+  background: #f8f9fa !important;
+}
+
+.react-flow__attribution {
+  display: none !important;
+}
+
+.react-flow__minimap {
+  border-radius: 12px !important;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(60, 64, 67, 0.18) !important;
+}
+
+@keyframes route-dash {
+  to {
+    stroke-dashoffset: -28;
+  }
+}
+
+@keyframes traffic-flow {
+  to {
+    stroke-dashoffset: -40;
+  }
+}
+
+@keyframes hero-route-flow {
+  to {
+    stroke-dashoffset: -20;
+  }
+}
+
+.hero-route-dash {
+  animation: hero-route-flow 0.6s linear infinite;
+}
+
+.edge-route path {
+  stroke: #0d7a6f !important;
+  stroke-width: 4px !important;
+  stroke-dasharray: 12 8;
+  animation: traffic-flow 0.7s linear infinite;
+  filter: drop-shadow(0 0 6px rgba(13, 122, 111, 0.45));
+}
+
+.edge-dim path {
+  stroke: #c5ddd6 !important;
+  stroke-width: 2px !important;
+  opacity: 0.25 !important;
+}
+
+.edge-normal path {
+  stroke: #ffffff !important;
+  stroke-width: 3px !important;
+  opacity: 1;
+  filter: drop-shadow(0 0 0.5px #9bbfb4) drop-shadow(0 0 0.5px #9bbfb4);
+}
+
+.edge-highway path {
+  stroke: #12a394 !important;
+  stroke-width: 4px !important;
+  filter: drop-shadow(0 0 0.6px #0d7a6f);
+}
+
+@keyframes node-pulse {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 0 rgba(13, 122, 111, 0));
+  }
+  50% {
+    filter: drop-shadow(0 0 12px rgba(13, 122, 111, 0.45));
+  }
+}
+
+.node-route {
+  animation: node-pulse 2s ease-in-out infinite;
+  z-index: 10 !important;
+}
+
+@keyframes index-scan {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.index-scan::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(13, 122, 111, 0.15),
+    transparent
+  );
+  animation: index-scan 1.8s ease-in-out infinite;
+}
+
+@keyframes pin-drop {
+  0% {
+    transform: translateY(-12px) scale(0.9);
+    opacity: 0;
+  }
+  60% {
+    transform: translateY(2px) scale(1.02);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+.map-pin-enter {
+  animation: pin-drop 0.45s ease-out both;
+}
+
+.district-halo {
+  position: absolute;
+  inset: -18px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: -1;
+  opacity: 0.55;
+}
