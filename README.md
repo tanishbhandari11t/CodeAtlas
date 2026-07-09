@@ -97,7 +97,7 @@ npm install
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000)
+Open [https://code-atlas-2gtw.onrender.com/](https://code-atlas-2gtw.onrender.com/)]
 
 ### Import a codebase
 
