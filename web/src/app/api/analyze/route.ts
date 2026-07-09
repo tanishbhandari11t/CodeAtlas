@@ -4,7 +4,6 @@ import {
   analyzeZipBuffer,
   parseGitHubRepo,
 } from "@/lib/analyze-repo";
-import { getGitHubToken } from "@/lib/github-auth";
 
 export const runtime = "nodejs";
 export const maxDuration = 120;
@@ -54,11 +53,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const token = await getGitHubToken();
-    const graph = await analyzeGitHubRepo(
-      `${parsed.owner}/${parsed.name}`,
-      token
-    );
+    const graph = await analyzeGitHubRepo(`${parsed.owner}/${parsed.name}`);
     return NextResponse.json({ graph });
   } catch (e) {
     const message = e instanceof Error ? e.message : "Analysis failed";

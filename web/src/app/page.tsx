@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, GitBranch, Upload, Link2, Navigation2 } from "lucide-react";
+import { ArrowRight, Upload, Link2, Navigation2 } from "lucide-react";
 import { InteractiveHeroMap } from "@/components/InteractiveHeroMap";
 
 export default function HomePage() {
@@ -108,24 +108,9 @@ export default function HomePage() {
               Understand any codebase in minutes
             </h2>
             <p className="mb-10 text-muted">
-              GitHub is optional. Bring a public URL, private repo, or a ZIP.
+              Paste a public GitHub URL or upload a ZIP — no login required.
             </p>
-            <div className="grid gap-4 sm:grid-cols-3">
-              <Link
-                href="/import?mode=github"
-                className="group flex flex-col gap-3 rounded-2xl border border-[#c5ddd6] bg-white p-6 transition-colors hover:border-[#0d7a6f]"
-              >
-                <GitBranch className="h-5 w-5 text-[#0d7a6f]" />
-                <span className="font-brand font-bold text-ink">
-                  Connect GitHub
-                </span>
-                <span className="text-sm text-muted">
-                  OAuth for private repos. Pick from your list.
-                </span>
-                <span className="mt-auto inline-flex items-center gap-1 text-sm font-medium text-[#0d7a6f] opacity-0 transition-opacity group-hover:opacity-100">
-                  Continue <ArrowRight className="h-3.5 w-3.5" />
-                </span>
-              </Link>
+            <div className="grid gap-4 sm:grid-cols-2">
               <Link
                 href="/import?mode=url"
                 className="group flex flex-col gap-3 rounded-2xl border border-[#c5ddd6] bg-white p-6 transition-colors hover:border-[#0d7a6f]"
@@ -148,7 +133,7 @@ export default function HomePage() {
                 <Upload className="h-5 w-5 text-[#0d7a6f]" />
                 <span className="font-brand font-bold text-ink">Upload ZIP</span>
                 <span className="text-sm text-muted">
-                  For companies that don&apos;t use GitHub.
+                  For codebases that aren&apos;t on GitHub.
                 </span>
                 <span className="mt-auto inline-flex items-center gap-1 text-sm font-medium text-[#0d7a6f] opacity-0 transition-opacity group-hover:opacity-100">
                   Continue <ArrowRight className="h-3.5 w-3.5" />

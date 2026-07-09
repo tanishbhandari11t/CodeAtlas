@@ -5,7 +5,7 @@
 ## The pipeline (what actually runs)
 
 ```
-GitHub / ZIP
+Public GitHub URL / ZIP
     → clone / unpack
     → parse files + imports + symbols
     → ⭐ semantic layer (districts / hierarchy / labels)
@@ -30,22 +30,11 @@ npm install
 npm run dev
 ```
 
-### GitHub OAuth (Connect GitHub)
+### Import a codebase
 
-1. Create an OAuth App at [GitHub Developer Settings](https://github.com/settings/developers)
-2. Set **Authorization callback URL** to:
-   `http://localhost:3000/api/auth/github/callback`
-3. Copy `web/.env.example` → `web/.env.local` and fill in:
-
-```env
-GITHUB_CLIENT_ID=...
-GITHUB_CLIENT_SECRET=...
-NEXT_PUBLIC_APP_URL=http://localhost:3000
-```
-
-4. Restart `npm run dev`, then open **Import → Connect GitHub**
-
-Without OAuth you can still clone public repos by URL or use the demo list.
+1. Open **Import**
+2. Paste a **public GitHub URL** (e.g. `facebook/react`) **or** upload a **ZIP**
+3. Wait for indexing → open the map
 
 **Re-import your repo** after analyzer updates (old session graphs lack districts).
 
@@ -59,5 +48,4 @@ Without OAuth you can still clone public repos by URL or use the demo list.
 - `src/lib/analyze-repo.ts` — clone + parse
 - `src/lib/semantic-layer.ts` — architecture extraction ⭐
 - `src/lib/navigation.ts` — pathfinding / routes
-- `src/lib/github-auth.ts` — GitHub OAuth + repo listing
 - React Flow map — districts-first UI

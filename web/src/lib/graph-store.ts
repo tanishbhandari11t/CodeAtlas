@@ -64,37 +64,3 @@ export function findRoute(
     ) ?? null
   );
 }
-
-/** Demo repos shown after "Connect GitHub" — real public repos for testing */
-export const demoRepos = [
-  {
-    id: "1",
-    name: "vercel/next.js",
-    language: "TypeScript",
-    private: false,
-  },
-  {
-    id: "2",
-    name: "facebook/react",
-    language: "JavaScript",
-    private: false,
-  },
-  {
-    id: "3",
-    name: "remix-run/remix",
-    language: "TypeScript",
-    private: false,
-  },
-  {
-    id: "4",
-    name: "withastro/astro",
-    language: "TypeScript",
-    private: false,
-  },
-  {
-    id: "5",
-    name: "expressjs/express",
-    language: "JavaScript",
-    private: false,
-  },
-];

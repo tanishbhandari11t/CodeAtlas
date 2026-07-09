@@ -916,7 +916,7 @@ export async function cloneGitHubRepo(
         ? `Could not clone ${fullName} with your GitHub account. Check access permissions. ${
             e instanceof Error ? e.message : ""
           }`
-        : `Could not clone https://github.com/${fullName}. Make sure the repository is public, or Connect GitHub for private repos. ${
+        : `Could not clone https://github.com/${fullName}. Make sure the repository is public and the name is correct. ${
             e instanceof Error ? e.message : ""
           }`
     );
