@@ -97,7 +97,7 @@ npm install
 npm run dev
 ```
 
-Open [https://code-atlas-2gtw.onrender.com/](https://code-atlas-2gtw.onrender.com/)]
+Open [https://code-atlas-2gtw.onrender.com/](https://code-atlas-2gtw.onrender.com/)
 
 ### Import a codebase
 
