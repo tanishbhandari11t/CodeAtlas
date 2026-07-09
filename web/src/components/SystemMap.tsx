@@ -956,6 +956,7 @@ function MapCanvas({ graph }: { graph: AtlasGraph }) {
         {selected && (
           <NodeDetailPanel
             node={selected}
+            repo={graph.repo}
             onClose={() => setSelected(null)}
             onSimulateDelete={() => setImpactNode(selected)}
             onNavigateFrom={() => {

@@ -8,12 +8,14 @@ import {
   Trash2,
   Navigation,
   ZoomIn,
+  ExternalLink,
 } from "lucide-react";
 import type { AtlasNode } from "@/lib/graph-store";
 import { KIND_META } from "@/lib/graph-store";
 
-  type Props = {
+type Props = {
   node: AtlasNode;
+  repo?: string;
   onClose: () => void;
   onSimulateDelete: () => void;
   onNavigateFrom?: () => void;
@@ -21,8 +23,34 @@ import { KIND_META } from "@/lib/graph-store";
   onZoomInto?: () => void;
 };
 
+/** Absolute Windows/Unix path that VS Code can open */
+function isAbsolutePath(file: string) {
+  return /^([a-zA-Z]:[\\/]|\/)/.test(file);
+}
+
+/** Repo-relative source file (not an npm package name) */
+function isRepoRelativeFile(file: string) {
+  if (!file || file === ".") return false;
+  if (isAbsolutePath(file)) return false;
+  // External packages look like "react", "@scope/pkg", "typescript-eslint"
+  if (!file.includes("/") && !file.includes("\\") && !file.includes(".")) {
+    return false;
+  }
+  if (file.startsWith("@") && !file.includes("/src") && !file.includes(".")) {
+    return false;
+  }
+  return true;
+}
+
+function githubBlobUrl(repo: string, file: string) {
+  const cleanRepo = repo.replace(/^https?:\/\/github\.com\//i, "").replace(/\.git$/, "");
+  const cleanFile = file.replace(/\\/g, "/").replace(/^\.\//, "");
+  return `https://github.com/${cleanRepo}/blob/HEAD/${cleanFile}`;
+}
+
 export function NodeDetailPanel({
   node,
+  repo,
   onClose,
   onSimulateDelete,
   onNavigateFrom,
@@ -30,6 +58,12 @@ export function NodeDetailPanel({
   onZoomInto,
 }: Props) {
   const meta = KIND_META[node.kind] || KIND_META.module;
+  const canOpenGithub =
+    Boolean(repo) &&
+    node.kind !== "external" &&
+    node.file &&
+    isRepoRelativeFile(node.file);
+  const canOpenVscode = node.file && isAbsolutePath(node.file);
 
   return (
     <aside className="absolute right-0 top-0 z-20 flex h-full w-full max-w-sm flex-col border-l border-line bg-white shadow-xl">
@@ -115,22 +149,51 @@ export function NodeDetailPanel({
           <div className="mb-5">
             <div className="mb-1.5 flex items-center gap-1.5 text-xs font-medium text-muted">
               <FileCode className="h-3.5 w-3.5" />
-              GitHub path
+              {node.kind === "external" ? "Package" : "Path in repo"}
             </div>
             <code className="block break-all rounded bg-fog px-2 py-1.5 font-mono text-xs text-ink-soft">
               {node.file}
             </code>
-            {node.label !== node.file.split("/").pop() && (
+            {node.label !== node.file.split(/[/\\]/).pop() && (
               <p className="mt-1 text-[11px] text-muted">
-                Map label: <span className="font-mono text-ink">{node.label}</span>
+                Map label:{" "}
+                <span className="font-mono text-ink">{node.label}</span>
               </p>
             )}
-            <a
-              href={`vscode://file/${node.file}`}
-              className="mt-2 inline-block text-xs font-medium text-teal hover:underline"
-            >
-              Open in VS Code
-            </a>
+            <div className="mt-2 flex flex-col gap-1.5">
+              {canOpenGithub && repo && (
+                <a
+                  href={githubBlobUrl(repo, node.file)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 text-xs font-medium text-teal hover:underline"
+                >
+                  <ExternalLink className="h-3 w-3" />
+                  Open on GitHub
+                </a>
+              )}
+              {canOpenVscode && (
+                <a
+                  href={`vscode://file/${node.file.replace(/\\/g, "/")}`}
+                  className="inline-flex items-center gap-1 text-xs font-medium text-teal hover:underline"
+                >
+                  Open in VS Code
+                </a>
+              )}
+              {!canOpenGithub && !canOpenVscode && node.kind === "external" && (
+                <p className="text-[11px] text-muted">
+                  External dependency — not a file on your disk. Open the
+                  package on npm/GitHub separately.
+                </p>
+              )}
+              {!canOpenGithub && !canOpenVscode && node.kind !== "external" && (
+                <p className="text-[11px] text-muted">
+                  CodeAtlas only stores the repo-relative path, so VS Code
+                  can&apos;t open it as a local file. Use GitHub after
+                  re-importing, or open the file from your local clone.
+                </p>
+              )}
+            </div>
           </div>
         )}
 
