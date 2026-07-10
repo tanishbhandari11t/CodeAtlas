@@ -339,11 +339,16 @@ function MapCanvas({ graph }: { graph: AtlasGraph }) {
   const [animating, setAnimating] = useState(false);
   const [animStep, setAnimStep] = useState(0);
   const [journeyActive, setJourneyActive] = useState(false);
-  const [nowPlaying, setNowPlaying] = useState<string | null>(null);
   const animRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const journeyReady = useRef(false);
 
   const journeyPathIds = journeyActive && activePath ? activePath.nodeIds : null;
+  const nowPlaying =
+    activePath && activePath.nodeIds.length > 0
+      ? activePath.nodeIds[
+          Math.min(animStep, activePath.nodeIds.length - 1)
+        ] ?? null
+      : null;
 
   const slice = useMemo(
     () =>
@@ -414,7 +419,6 @@ function MapCanvas({ graph }: { graph: AtlasGraph }) {
     if (!animating || !activePath) return;
     const id = activePath.nodeIds[animStep];
     if (!id) return;
-    setNowPlaying(id);
 
     const fly = () => {
       const rfNode = getNode(id);
@@ -532,7 +536,6 @@ function MapCanvas({ graph }: { graph: AtlasGraph }) {
       stopAnimation();
       setAnimStep(0);
       setAnimating(true);
-      setNowPlaying(path.nodeIds[0] || null);
       let step = 0;
       animRef.current = setInterval(() => {
         step += 1;
@@ -562,7 +565,6 @@ function MapCanvas({ graph }: { graph: AtlasGraph }) {
     setAlternateRoutes([]);
     setAnimStep(0);
     setJourneyActive(false);
-    setNowPlaying(null);
   }, [stopAnimation]);
 
   const enterDistrict = (id: string) => {
@@ -836,6 +838,7 @@ function MapCanvas({ graph }: { graph: AtlasGraph }) {
       <div className="relative min-h-0 flex-1 map-terrain">
         {mode === "directions" && (
           <DirectionsPanel
+            key={`${navFromId ?? ""}:${navToId ?? ""}`}
             graph={graph}
             activePath={activePath}
             alternateRoutes={alternateRoutes}
@@ -1021,19 +1024,7 @@ function EmptyMap({ repoHint }: { repoHint: string | null }) {
 function SystemMapInner() {
   const params = useSearchParams();
   const repoHint = params.get("repo");
-  const [graph, setGraph] = useState<AtlasGraph | null | undefined>(undefined);
-
-  useEffect(() => {
-    setGraph(loadGraph());
-  }, []);
-
-  if (graph === undefined) {
-    return (
-      <div className="atlas-grid flex h-dvh items-center justify-center">
-        <p className="text-sm text-muted">Loading map…</p>
-      </div>
-    );
-  }
+  const [graph] = useState<AtlasGraph | null>(() => loadGraph());
 
   if (!graph) return <EmptyMap repoHint={repoHint} />;
 

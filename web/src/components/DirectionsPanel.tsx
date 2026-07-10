@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import {
   Navigation,
   ArrowRight,
@@ -86,18 +86,6 @@ export function DirectionsPanel({
     return graph.nodes.find((n) => n.id === initialToId)?.label || "";
   });
   const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (!initialFromId) return;
-    setFromId(initialFromId);
-    setFromQuery(graph.nodes.find((n) => n.id === initialFromId)?.label || "");
-  }, [initialFromId, graph.nodes]);
-
-  useEffect(() => {
-    if (!initialToId) return;
-    setToId(initialToId);
-    setToQuery(graph.nodes.find((n) => n.id === initialToId)?.label || "");
-  }, [initialToId, graph.nodes]);
 
   const fromSuggestions = useMemo(() => {
     if (fromQuery.trim().length < 1) return allLandmarks(graph).slice(0, 12);

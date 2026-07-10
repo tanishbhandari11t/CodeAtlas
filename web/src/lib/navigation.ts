@@ -304,7 +304,7 @@ export function findRoutes(
       edges: baseEdges.filter((e) => !blocked.has(e.id)),
     };
 
-    let path =
+    const path =
       shortestPath(filtered, fromId, toId, false) ||
       (i === 0 ? pathViaHierarchy(graph, fromId, toId) : null);
 

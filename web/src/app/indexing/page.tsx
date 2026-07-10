@@ -62,26 +62,25 @@ function IndexingContent() {
   const params = useSearchParams();
   const repo = params.get("repo") || "";
   const mode = params.get("mode") || "github";
+  const missingRepo = !repo && mode !== "zip";
   const [step, setStep] = useState(0);
-  const [status, setStatus] = useState("Starting…");
+  const [status, setStatus] = useState(() =>
+    mode === "zip" ? "Reading uploaded ZIP…" : `git clone --depth 1 ${repo}`
+  );
   const [error, setError] = useState<string | null>(null);
   const [done, setDone] = useState(false);
+  const displayError = missingRepo
+    ? "No repository specified. Go back and choose a repo."
+    : error;
 
   useEffect(() => {
-    if (!repo && mode !== "zip") {
-      setError("No repository specified. Go back and choose a repo.");
-      return;
-    }
+    if (missingRepo) return;
 
     let alive = true;
 
     const stepTimer = setInterval(() => {
       if (alive) setStep((s) => Math.min(s + 1, indexingSteps.length - 1));
     }, 900);
-
-    setStatus(
-      mode === "zip" ? "Reading uploaded ZIP…" : `git clone --depth 1 ${repo}`
-    );
 
     analyzeRepo(repo, mode)
       .then((graph) => {
@@ -121,7 +120,7 @@ function IndexingContent() {
       clearInterval(stepTimer);
       // Do NOT abort the shared request — Strict Mode remounts must reuse it
     };
-  }, [repo, mode]);
+  }, [repo, mode, missingRepo]);
 
   const progress = Math.min(
     100,
@@ -140,7 +139,7 @@ function IndexingContent() {
 
       <main className="mx-auto flex w-full max-w-lg flex-1 flex-col justify-center px-6 pb-24">
         <p className="mb-1 font-mono text-xs uppercase tracking-widest text-teal">
-          {error ? "Indexing failed" : "Indexing repository"}
+          {displayError ? "Indexing failed" : "Indexing repository"}
         </p>
         <h1 className="font-display mb-2 text-2xl font-bold text-ink">
           {repo || "Uploaded archive"}
@@ -150,7 +149,7 @@ function IndexingContent() {
         </p>
         <p className="mb-8 font-mono text-xs text-teal">{status}</p>
 
-        {!error && (
+        {!displayError && (
           <div className="relative mb-8 h-1 overflow-hidden rounded-full bg-line index-scan">
             <div
               className="absolute inset-y-0 left-0 bg-teal transition-all duration-500"
@@ -159,9 +158,9 @@ function IndexingContent() {
           </div>
         )}
 
-        {error ? (
+        {displayError ? (
           <div className="border border-danger/40 bg-white p-4">
-            <p className="mb-3 text-sm text-danger">{error}</p>
+            <p className="mb-3 text-sm text-danger">{displayError}</p>
             <p className="mb-4 text-xs text-muted">
               Common causes: private repo, typo in owner/name, or network
               issues. Try <code>expressjs/express</code> to verify.
